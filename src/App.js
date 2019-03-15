@@ -1,10 +1,11 @@
-import React, { Component, createRef } from 'react';
+import React, { PureComponent } from 'react';
 import Table from "./Table.js";
+import axios from 'axios'
 
 import './App.css';
 
-class App extends Component {
-    constructor() {
+class App extends PureComponent {
+    /* constructor() {
         super();
         this.state = {
             hnNews: undefined ,
@@ -16,17 +17,62 @@ class App extends Component {
         this.changeSort = this.changeSort.bind(this);
         this.sort = createRef();
         this.countClick = 0;
-    }    
-    
-    gethnNews () {
-
+    } */    
+    state = {
+        hnNews: undefined ,
+            hnNewsTop: undefined,
+            hackerEarth: undefined,
+            data: undefined
     }
 
-    loadData() {
-        console.log(window.location.hash.split('#')[1]);
+    gethnNews = () => {
+        axios.get('http://cors.io/?https://hnrss.org/newest.jsonfeed', {
+            // axios.get('/hackernews',{
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Method': 'GET'
+                  },
+                  responseType: 'json'
+        })
+        .then(response => {
+            this.setState({hnNews: response.data});
+        })
+        .then(() => {
+            console.log(this.state.hnNews);
+        })
+        .catch(err => {
+            console.log(err);
+        });
     }
 
-    changeSort (event) {
+    getHnnewsTop = () => {
+        axios.get('https://hacker-news.firebaseio.com/v0/topstories.json', {
+                    responseType: 'json'
+                })
+                .then(response => {
+                    this.setState({hnNewsTop: response.data});
+                })
+                .then(() => {
+                    console.log(this.state.hnNewsTop);
+                })
+    }
+
+    loadData = () => {
+        switch(window.location.hash.split('#')[1]) {
+            case 'hackernewsTop' :
+                this.getHnnewsTop();
+                break;
+            case 'hackernews' :
+                this.gethnNews();
+                break;
+
+            default: alert("Error in loadData")
+        }
+        
+        // console.log(window.location.hash.split('#')[1]);
+    }
+
+    changeSort = (event) => {
         this.countClick++;
         if (this.countClick % 2 === 0) {
             window.location.hash = "hackernewsTop";
@@ -37,7 +83,7 @@ class App extends Component {
         }
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         if (!window.location.hash) {
             document.location.hash = '#hackernews';
         } else {
@@ -46,7 +92,7 @@ class App extends Component {
         window.onhashchange = this.loadData();
     }
 
-    render() {
+    render = () => {
     return (<div>
         <button type="button" className="btn btn-secondary col-2" onClick = {this.loadData}>Reload data</button>
         <div>&nbsp;</div>
