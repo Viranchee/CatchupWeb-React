@@ -26,7 +26,7 @@ class App extends PureComponent {
     }
 
     gethnNews = () => {
-        axios.get('http://cors.io/?https://hnrss.org/newest.jsonfeed', {
+        axios.get('https://corsenabled.herokuapp.com/get?to=https://hnrss.org/newest.jsonfeed', {
             // axios.get('/hackernews',{
                 headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -46,7 +46,7 @@ class App extends PureComponent {
     }
 
     getHnnewsTop = () => {
-        axios.get('https://hacker-news.firebaseio.com/v0/topstories.json', {
+        axios.get('https://corsenabled.herokuapp.com/get?to=https://hacker-news.firebaseio.com/v0/topstories.json', {
                     responseType: 'json'
                 })
                 .then(response => {
